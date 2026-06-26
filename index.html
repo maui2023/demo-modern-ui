@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="ms" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistem Pengurusan Wisma Bintara ATM - W-BINTARA 2.0</title>
+  
+  <!-- MANDATORY: Declare support for both light and dark themes -->
+  <meta name="color-scheme" content="light dark">
+  
+  <!-- Inline script to prevent theme flash (FOUC) -->
+  <script>
+    {
+      const colorScheme = localStorage.getItem("color-scheme") || "light";
+      document.documentElement.setAttribute("data-bs-theme", colorScheme);
+    }
+  </script>
+
+
+  <!-- Google Fonts (Outfit) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Bootstrap 5.3 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Custom Style -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- App Container -->
+  <div class="app-container">
+    
+    <!-- Sidebar -->
+    <aside class="sidebar-wrapper shadow" id="sidebar">
+      <div class="sidebar-header d-flex align-items-center justify-content-between">
+        <div class="brand-logo d-flex align-items-center gap-2">
+          <div class="logo-icon bg-primary text-white d-flex align-items-center justify-content-center rounded-3">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+          <div class="brand-text">
+            <h1 class="brand-title">W-BINTARA</h1>
+            <span class="brand-subtitle">Wisma Bintara ATM</span>
+          </div>
+        </div>
+        <button class="btn btn-close-sidebar d-lg-none" id="close-sidebar-btn" aria-label="Tutup Sidebar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- User Profile (Sidebar) -->
+      <div class="sidebar-user px-4 py-3 my-2 border-bottom border-top border-opacity-10 border-secondary">
+        <div class="d-flex align-items-center gap-3">
+          <div class="avatar-container position-relative">
+            <div class="user-avatar bg-secondary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold">
+              SA
+            </div>
+            <span class="status-indicator online"></span>
+          </div>
+          <div class="user-info">
+            <h6 class="user-name mb-0">Super Admin</h6>
+            <span class="user-role text-muted">Pengurus Wisma</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Menu -->
+      <nav class="sidebar-nav px-3">
+        <ul class="nav nav-pills flex-column gap-1">
+          <li class="nav-item">
+            <a href="#" class="nav-link active" data-tab="dashboard">
+              <i class="fa-solid fa-chart-line nav-icon"></i>
+              <span>Papan Pemuka</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link" data-tab="register-visitor">
+              <i class="fa-solid fa-user-plus nav-icon"></i>
+              <span>Daftar Pelawat</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link" data-tab="visitor-records">
+              <i class="fa-solid fa-address-book nav-icon"></i>
+              <span>Rekod Pelawat</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link" data-tab="qr-scanner">
+              <i class="fa-solid fa-qrcode nav-icon"></i>
+              <span>Imbas Kod QR</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link" data-tab="settings">
+              <i class="fa-solid fa-sliders nav-icon"></i>
+              <span>Tetapan</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer mt-auto p-3">
+        <button class="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center gap-2" id="logout-btn">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Log Keluar</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Wrapper -->
+    <div class="main-content">
+      
+      <!-- Topbar Header -->
+      <header class="topbar-header bg-card d-flex align-items-center justify-content-between px-4 py-3 shadow-sm">
+        <div class="d-flex align-items-center gap-3">
+          <button class="btn btn-toggle-sidebar d-lg-none" id="toggle-sidebar-btn" aria-label="Buka Sidebar">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div class="search-bar d-none d-md-flex align-items-center position-relative">
+            <i class="fa-solid fa-magnifying-glass search-icon text-muted"></i>
+            <input type="text" class="form-control" id="global-search-input" placeholder="Cari pelawat, no. tentera, kereta...">
+          </div>
+        </div>
+
+        <div class="topbar-actions d-flex align-items-center gap-3">
+          <!-- Dark Mode Toggle Button -->
+          <button class="btn btn-theme-toggle rounded-circle text-muted" id="theme-toggle-btn" title="Tukar Mod Tema">
+            <i class="fa-solid fa-moon dark-icon"></i>
+            <i class="fa-solid fa-sun light-icon d-none"></i>
+          </button>
+
+          <!-- Notification Dropdown -->
+          <div class="dropdown">
+            <button class="btn btn-icon position-relative text-muted" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Notifikasi">
+              <i class="fa-regular fa-bell"></i>
+              <span class="badge-dot bg-danger"></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0 py-2" style="width: 280px;">
+              <li class="dropdown-header border-bottom pb-2 mb-2 d-flex justify-content-between align-items-center">
+                <span class="fw-semibold">Notifikasi Baru</span>
+                <span class="badge bg-primary-subtle text-primary">3 Baru</span>
+              </li>
+              <li>
+                <a class="dropdown-item py-2 d-flex gap-2" href="#">
+                  <div class="icon-avatar bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; flex-shrink:0;">
+                    <i class="fa-solid fa-circle-check fs-6"></i>
+                  </div>
+                  <div class="text-wrap">
+                    <p class="mb-0 small text-dark-emphasis">Ali bin Abu berjaya check-out</p>
+                    <span class="text-muted small" style="font-size: 10px;">2 minit lalu</span>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item py-2 d-flex gap-2" href="#">
+                  <div class="icon-avatar bg-info-subtle text-info rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; flex-shrink:0;">
+                    <i class="fa-solid fa-qrcode fs-6"></i>
+                  </div>
+                  <div class="text-wrap">
+                    <p class="mb-0 small text-dark-emphasis">Kod QR dijana untuk Kpl Ahmad</p>
+                    <span class="text-muted small" style="font-size: 10px;">10 minit lalu</span>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <li class="text-center">
+                <a class="dropdown-item text-primary small py-1" href="#">Lihat semua notifikasi</a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Divider -->
+          <div class="vr bg-opacity-20 bg-secondary" style="height: 24px;"></div>
+
+          <!-- User Quick Menu -->
+          <div class="dropdown">
+            <a class="d-flex align-items-center gap-2 text-decoration-none dropdown-toggle cursor-pointer" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <div class="user-avatar-small bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold small">
+                SA
+              </div>
+              <span class="d-none d-sm-inline text-dark-emphasis fw-medium small">Admin Wisma</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0 py-1">
+              <li>
+                <a class="dropdown-item d-flex align-items-center gap-2" href="#" data-tab-link="settings">
+                  <i class="fa-solid fa-user-gear text-muted"></i>
+                  <span>Profil Saya</span>
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item d-flex align-items-center gap-2" href="#" data-tab-link="settings">
+                  <i class="fa-solid fa-gears text-muted"></i>
+                  <span>Tetapan Sistem</span>
+                </a>
+              </li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <a class="dropdown-item text-danger d-flex align-items-center gap-2" href="#" id="logout-quick-btn">
+                  <i class="fa-solid fa-right-from-bracket"></i>
+                  <span>Log Keluar</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content Tabs Container -->
+      <main class="content-body p-4">
+        
+        <!-- ==================== TAB 1: DASHBOARD ==================== -->
+        <section class="tab-pane active" id="dashboard-tab">
+          <!-- Welcome Bar -->
+          <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-4">
+            <div>
+              <h2 class="h3 font-weight-bold text-dark-emphasis mb-1">Selamat Datang Ke Portal W-BINTARA</h2>
+              <p class="text-muted mb-0">Paparan maklumat semasa pendaftaran dan statistik pelawat Wisma Bintara ATM.</p>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-2 fw-medium">
+                <i class="fa-regular fa-clock me-1"></i>
+                <span id="current-datetime">Memuatkan masa...</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Metrics Cards Row -->
+          <div class="row g-4 mb-4">
+            <!-- Card 1: Today's Visitors -->
+            <div class="col-12 col-sm-6 col-xl-3">
+              <div class="card card-metric border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-4 d-flex align-items-center justify-content-between">
+                  <div>
+                    <span class="text-muted small text-uppercase fw-semibold mb-1 d-block">Pelawat Hari Ini</span>
+                    <h3 class="metric-value mb-1 fw-bold text-dark-emphasis" id="metric-total-today">145</h3>
+                    <span class="metric-trend text-success small fw-medium">
+                      <i class="fa-solid fa-arrow-trend-up"></i> +12% dari semalam
+                    </span>
+                  </div>
+                  <div class="metric-icon-box bg-primary-subtle text-primary rounded-4 d-flex align-items-center justify-content-center">
+                    <i class="fa-solid fa-users fs-3"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Card 2: Active Check-Ins -->
+            <div class="col-12 col-sm-6 col-xl-3">
+              <div class="card card-metric border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-4 d-flex align-items-center justify-content-between">
+                  <div>
+                    <span class="text-muted small text-uppercase fw-semibold mb-1 d-block">Daftar Masuk Aktif</span>
+                    <h3 class="metric-value mb-1 fw-bold text-dark-emphasis" id="metric-active-count">87</h3>
+                    <span class="metric-trend text-muted small">Sedang berada di dalam Wisma</span>
+                  </div>
+                  <div class="metric-icon-box bg-success-subtle text-success rounded-4 d-flex align-items-center justify-content-center">
+                    <i class="fa-solid fa-arrow-right-to-bracket fs-3"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 3: Available Rooms -->
+            <div class="col-12 col-sm-6 col-xl-3">
+              <div class="card card-metric border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-4 d-flex align-items-center justify-content-between">
+                  <div>
+                    <span class="text-muted small text-uppercase fw-semibold mb-1 d-block">Kekosongan Bilik</span>
+                    <h3 class="metric-value mb-1 fw-bold text-dark-emphasis">14</h3>
+                    <span class="metric-trend text-danger small fw-medium">
+                      <i class="fa-solid fa-circle-exclamation"></i> Katil hampir penuh (87%)
+                    </span>
+                  </div>
+                  <div class="metric-icon-box bg-warning-subtle text-warning rounded-4 d-flex align-items-center justify-content-center">
+                    <i class="fa-solid fa-bed fs-3"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 4: QR Scan Rate -->
+            <div class="col-12 col-sm-6 col-xl-3">
+              <div class="card card-metric border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-4 d-flex align-items-center justify-content-between">
+                  <div>
+                    <span class="text-muted small text-uppercase fw-semibold mb-1 d-block">Kadar Pengimbasan QR</span>
+                    <h3 class="metric-value mb-1 fw-bold text-dark-emphasis">94.2%</h3>
+                    <span class="metric-trend text-success small fw-medium">
+                      <i class="fa-solid fa-arrow-trend-up"></i> Meningkat minggu ini
+                    </span>
+                  </div>
+                  <div class="metric-icon-box bg-info-subtle text-info rounded-4 d-flex align-items-center justify-content-center">
+                    <i class="fa-solid fa-qrcode fs-3"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts and Quick Actions Row -->
+          <div class="row g-4 mb-4">
+            <!-- Chart Container -->
+            <div class="col-12 col-lg-8">
+              <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-header bg-transparent border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+                  <div>
+                    <h4 class="card-title fw-bold text-dark-emphasis mb-0">Aliran Pelawat Mingguan</h4>
+                    <span class="text-muted small">Statistik pendaftaran pelawat mengikut kategori.</span>
+                  </div>
+                  <div class="dropdown">
+                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle rounded-pill px-3" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Minggu Ini
+                    </button>
+                    <ul class="dropdown-menu border-0 shadow py-1">
+                      <li><a class="dropdown-item active small" href="#">Minggu Ini</a></li>
+                      <li><a class="dropdown-item small" href="#">Bulan Ini</a></li>
+                      <li><a class="dropdown-item small" href="#">Tahun Ini</a></li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="card-body px-4 pb-4 pt-2">
+                  <div class="chart-container position-relative" style="height: 280px; width: 100%;">
+                    <canvas id="weekly-visitor-chart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Actions Panel -->
+            <div class="col-12 col-lg-4">
+              <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-header bg-transparent border-0 pt-4 px-4">
+                  <h4 class="card-title fw-bold text-dark-emphasis mb-0">Tindakan Pantas</h4>
+                  <span class="text-muted small">Pintasan kawalan utama kaunter wisma.</span>
+                </div>
+                <div class="card-body p-4 d-flex flex-column gap-3">
+                  <button class="btn btn-primary d-flex align-items-center justify-content-between p-3 rounded-4 shadow-sm text-start w-100" data-action-tab="register-visitor">
+                    <div class="d-flex align-items-center gap-3">
+                      <div class="action-icon bg-white text-primary rounded-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                        <i class="fa-solid fa-user-plus fs-5"></i>
+                      </div>
+                      <div>
+                        <h6 class="mb-0 fw-semibold text-white">Daftar Pelawat Baru</h6>
+                        <span class="text-white-50 small">Isi borang & jana pas QR</span>
+                      </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-white-50"></i>
+                  </button>
+
+                  <button class="btn btn-success d-flex align-items-center justify-content-between p-3 rounded-4 shadow-sm text-start text-white w-100" data-action-tab="qr-scanner">
+                    <div class="d-flex align-items-center gap-3">
+                      <div class="action-icon bg-white text-success rounded-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                        <i class="fa-solid fa-camera fs-5"></i>
+                      </div>
+                      <div>
+                        <h6 class="mb-0 fw-semibold">Imbas Pas Pelawat</h6>
+                        <span class="text-white-50 small">Gunakan kamera untuk QR code</span>
+                      </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-white-50"></i>
+                  </button>
+
+                  <div class="p-3 border rounded-4 d-flex align-items-center justify-content-between bg-body-tertiary">
+                    <div class="d-flex align-items-center gap-3">
+                      <div class="icon-circle bg-warning-subtle text-warning rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                        <i class="fa-solid fa-database"></i>
+                      </div>
+                      <div>
+                        <h6 class="mb-0 small fw-semibold text-dark-emphasis">Sambungan Pangkalan Data</h6>
+                        <span class="text-success small d-flex align-items-center gap-1" style="font-size: 11px;">
+                          <span class="pulse-dot"></span> PostgreSQL Aktif
+                        </span>
+                      </div>
+                    </div>
+                    <span class="badge bg-secondary-subtle text-secondary-emphasis small">V15.2</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Visitors Row -->
+          <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-header bg-transparent border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+              <div>
+                <h4 class="card-title fw-bold text-dark-emphasis mb-0">Pelawat Terkini Mendaftar Masuk</h4>
+                <span class="text-muted small">Ringkasan daftar masuk masa nyata.</span>
+              </div>
+              <button class="btn btn-light btn-sm rounded-pill px-3 fw-medium text-primary border" data-action-tab="visitor-records">Lihat Semua Rekod</button>
+            </div>
+            <div class="card-body px-4 pb-4 pt-2">
+              <div class="table-responsive">
+                <table class="table table-hover align-middle custom-table mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col" class="border-0 rounded-start">ID Pelawat</th>
+                      <th scope="col" class="border-0">Nama Pelawat</th>
+                      <th scope="col" class="border-0">Kategori</th>
+                      <th scope="col" class="border-0">No. Kenderaan</th>
+                      <th scope="col" class="border-0">Masa Masuk</th>
+                      <th scope="col" class="border-0">Status</th>
+                      <th scope="col" class="border-0 rounded-end text-end">Tindakan</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dashboard-recent-table-body">
+                    <!-- Loaded dynamically via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== TAB 2: REGISTER VISITOR ==================== -->
+        <section class="tab-pane d-none" id="register-visitor-tab">
+          <div class="mb-4">
+            <h2 class="h3 font-weight-bold text-dark-emphasis mb-1">Daftar Pelawat Wisma Baru</h2>
+            <p class="text-muted">Isi borang di bawah untuk menjana Kod QR Pas Pelawat Wisma Bintara ATM.</p>
+          </div>
+
+          <div class="row g-4">
+            <!-- Borang Input (Left Side) -->
+            <div class="col-12 col-xl-8">
+              <form id="visitor-registration-form" novalidate>
+                
+                <!-- Card Section 1: Kategori Pelawat -->
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
+                  <div class="card-body p-4">
+                    <h5 class="card-title fw-bold text-dark-emphasis mb-3 d-flex align-items-center gap-2">
+                      <span class="step-badge bg-primary text-white d-flex align-items-center justify-content-center">1</span>
+                      <span>Jenis & Kategori Pelawat</span>
+                    </h5>
+                    
+                    <div class="row g-3">
+                      <!-- Jenis Pelawat Radio Group -->
+                      <div class="col-12">
+                        <label class="form-label fw-semibold text-dark-emphasis">Jenis Pelawat</label>
+                        <div class="d-flex gap-4 flex-wrap mt-1">
+                          <div class="form-check form-check-custom">
+                            <input class="form-check-input" type="radio" name="visitor_type" id="type-military" value="military" checked>
+                            <label class="form-check-label" for="type-military">
+                              <i class="fa-solid fa-person-military-pointing text-primary me-1"></i> Anggota Tentera
+                            </label>
+                          </div>
+                          <div class="form-check form-check-custom">
+                            <input class="form-check-input" type="radio" name="visitor_type" id="type-public" value="public">
+                            <label class="form-check-label" for="type-public">
+                              <i class="fa-solid fa-users text-secondary me-1"></i> Orang Awam / Kontraktor
+                            </label>
+                          </div>
+                          <div class="form-check form-check-custom">
+                            <input class="form-check-input" type="radio" name="visitor_type" id="type-veteran" value="veteran">
+                            <label class="form-check-label" for="type-veteran">
+                              <i class="fa-solid fa-user-shield text-success me-1"></i> Veteran Tentera
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Military Branch Selection (Conditional) -->
+                      <div id="military-fields-group" class="col-12 border-top pt-3 mt-3">
+                        <div class="row g-3">
+                          <div class="col-12">
+                            <label class="form-label fw-semibold text-dark-emphasis">Cabang Perkhidmatan ATM</label>
+                            <div class="d-flex gap-4 flex-wrap mt-1">
+                              <div class="form-check form-check-custom">
+                                <input class="form-check-input" type="radio" name="mil_branch" id="branch-army" value="Army" checked>
+                                <label class="form-check-label" for="branch-army">
+                                  <i class="fa-solid fa-person-military-rifle text-success me-1"></i> Darat (Army)
+                                </label>
+                              </div>
+                              <div class="form-check form-check-custom">
+                                <input class="form-check-input" type="radio" name="mil_branch" id="branch-navy" value="Navy">
+                                <label class="form-check-label" for="branch-navy">
+                                  <i class="fa-solid fa-anchor text-info me-1"></i> Laut (Navy)
+                                </label>
+                              </div>
+                              <div class="form-check form-check-custom">
+                                <input class="form-check-input" type="radio" name="mil_branch" id="branch-airforce" value="Air Force">
+                                <label class="form-check-label" for="branch-airforce">
+                                  <i class="fa-solid fa-plane-up text-primary me-1"></i> Udara (Air Force)
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- Military No & Rank -->
+                          <div class="col-12 col-md-6">
+                            <label for="mil_no" class="form-label fw-semibold text-dark-emphasis">No. Tentera <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="mil_no" placeholder="Contoh: T-123456 atau 1123456" required>
+                            <div class="invalid-feedback">Sila masukkan No. Tentera yang sah.</div>
+                          </div>
+
+                          <div class="col-12 col-md-6">
+                            <label for="mil_rank" class="form-label fw-semibold text-dark-emphasis">Pangkat ATM <span class="text-danger">*</span></label>
+                            <select class="form-select" id="mil_rank" required>
+                              <option value="" disabled selected>-- Pilih Pangkat --</option>
+                              <optgroup label="Lain-Lain Pangkat (LLP)">
+                                <option value="Prebet">Prebet</option>
+                                <option value="Lans Koperal">Lans Koperal</option>
+                                <option value="Koperal">Koperal</option>
+                                <option value="Sarjan">Sarjan</option>
+                                <option value="Staf Sarjan">Staf Sarjan</option>
+                                <option value="Pegawai Waran II">Pegawai Waran II</option>
+                                <option value="Pegawai Waran I">Pegawai Waran I</option>
+                              </optgroup>
+                              <optgroup label="Pegawai Tauliah">
+                                <option value="Pegawai Kadet">Pegawai Kadet</option>
+                                <option value="Letnan Muda">Letnan Muda</option>
+                                <option value="Letnan">Letnan</option>
+                                <option value="Kapten">Kapten</option>
+                                <option value="Major">Major</option>
+                                <option value="Letnan Kolonel">Letnan Kolonel</option>
+                                <option value="Kolonel">Kolonel</option>
+                                <option value="Brigedier Jeneral">Brigedier Jeneral</option>
+                              </optgroup>
+                            </select>
+                            <div class="invalid-feedback">Sila pilih pangkat anggota.</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Civil ID Section (Conditional, initially hidden) -->
+                      <div id="civilian-fields-group" class="col-12 border-top pt-3 mt-3 d-none">
+                        <div class="row g-3">
+                          <div class="col-12 col-md-6">
+                            <label for="civil_ic" class="form-label fw-semibold text-dark-emphasis">No. Kad Pengenalan (IC) / Pasport <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="civil_ic" placeholder="Contoh: 850212-14-5543" required>
+                            <div class="invalid-feedback">Sila masukkan No. IC/Pasport yang sah.</div>
+                          </div>
+                          <div class="col-12 col-md-6">
+                            <label for="civil_agency" class="form-label fw-semibold text-dark-emphasis">Nama Syarikat / Agensi / Hubungan</label>
+                            <input type="text" class="form-control" id="civil_agency" placeholder="Contoh: Telekom Malaysia / Keluarga Anggota">
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card Section 2: Maklumat Peribadi & Hubungan -->
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
+                  <div class="card-body p-4">
+                    <h5 class="card-title fw-bold text-dark-emphasis mb-3 d-flex align-items-center gap-2">
+                      <span class="step-badge bg-primary text-white d-flex align-items-center justify-content-center">2</span>
+                      <span>Maklumat Peribadi & Hubungan</span>
+                    </h5>
+
+                    <div class="row g-3">
+                      <div class="col-12">
+                        <label for="visitor_name" class="form-label fw-semibold text-dark-emphasis">Nama Penuh Pelawat <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="visitor_name" placeholder="Masukkan nama penuh seperti dalam IC/Dokumen Tentera" required>
+                        <div class="invalid-feedback">Nama penuh wajib diisi.</div>
+                      </div>
+
+                      <div class="col-12 col-md-6">
+                        <label for="visitor_phone" class="form-label fw-semibold text-dark-emphasis">No. Telefon Bimbit (HP) <span class="text-danger">*</span></label>
+                        <input type="tel" class="form-control" id="visitor_phone" placeholder="Contoh: 012-3456789" required>
+                        <div class="invalid-feedback">No. telefon wajib diisi.</div>
+                      </div>
+
+                      <div class="col-12 col-md-6">
+                        <label for="visitor_office_phone" class="form-label fw-semibold text-dark-emphasis">No. Tel Pejabat</label>
+                        <input type="tel" class="form-control" id="visitor_office_phone" placeholder="Contoh: 03-26921111">
+                      </div>
+
+                      <div class="col-12">
+                        <label for="visitor_email" class="form-label fw-semibold text-dark-emphasis">Alamat E-mel</label>
+                        <input type="email" class="form-control" id="visitor_email" placeholder="Contoh: pelawat@gmail.com">
+                        <div class="invalid-feedback">Format e-mel tidak sah.</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card Section 3: Maklumat Kunjungan & Kenderaan -->
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
+                  <div class="card-body p-4">
+                    <h5 class="card-title fw-bold text-dark-emphasis mb-3 d-flex align-items-center gap-2">
+                      <span class="step-badge bg-primary text-white d-flex align-items-center justify-content-center">3</span>
+                      <span>Maklumat Kunjungan & Kenderaan</span>
+                    </h5>
+
+                    <div class="row g-3">
+                      <div class="col-12 col-md-6">
+                        <label for="vehicle_no" class="form-label fw-semibold text-dark-emphasis">No. Pendaftaran Kenderaan <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="vehicle_no" placeholder="Contoh: WQA 4321 / Tiada (jika berjalan kaki)" required>
+                        <div class="invalid-feedback">No. kenderaan wajib diisi (nyatakan 'Tiada' jika berjalan kaki).</div>
+                      </div>
+
+                      <div class="col-12 col-md-6">
+                        <label for="visit_datetime" class="form-label fw-semibold text-dark-emphasis">Tarikh & Masa Masuk <span class="text-danger">*</span></label>
+                        <input type="datetime-local" class="form-control" id="visit_datetime" required>
+                        <div class="invalid-feedback">Masa masuk wajib diisi.</div>
+                      </div>
+
+                      <div class="col-12">
+                        <label for="visit_purpose" class="form-label fw-semibold text-dark-emphasis">Tujuan Lawatan / Destinasi <span class="text-danger">*</span></label>
+                        <select class="form-select" id="visit_purpose" required>
+                          <option value="" disabled selected>-- Pilih Destinasi Lawatan --</option>
+                          <option value="Pejabat Pentadbiran Wisma">Pejabat Pentadbiran Wisma</option>
+                          <option value="Mess Pegawai / Dewan Sajian">Mess Pegawai / Dewan Sajian</option>
+                          <option value="Penginapan Bilik Hostel / Penginap">Penginapan Bilik Hostel / Penginap</option>
+                          <option value="Mesyuarat AJK Wisma Bintara">Mesyuarat AJK Wisma Bintara</option>
+                          <option value="Urusan Logistik & Sajian">Urusan Logistik & Sajian</option>
+                          <option value="Lawatan Peribadi / Sosial">Lawatan Peribadi / Sosial</option>
+                          <option value="Penyelenggaraan Kemudahan">Penyelenggaraan Kemudahan (Kontraktor)</option>
+                        </select>
+                        <div class="invalid-feedback">Sila pilih destinasi lawatan.</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Form Submit and Reset Buttons -->
+                <div class="d-flex gap-3 justify-content-end mb-5">
+                  <button type="button" class="btn btn-outline-secondary px-4 py-2 rounded-3" id="reset-form-btn">
+                    <i class="fa-solid fa-rotate-left me-1"></i> Batal / Set Semula
+                  </button>
+                  <button type="submit" class="btn btn-primary px-4 py-2 rounded-3" id="submit-form-btn">
+                    <i class="fa-solid fa-floppy-disk me-1"></i> Jana Kod QR & Simpan
+                  </button>
+                </div>
+
+              </form>
+            </div>
+
+            <!-- Kod QR Live Preview (Right Side) -->
+            <div class="col-12 col-xl-4">
+              <div class="card border-0 shadow-sm rounded-4 sticky-preview" style="top: 24px;">
+                <div class="card-body p-4 text-center">
+                  <h5 class="card-title fw-bold text-dark-emphasis text-start mb-3">Pas Kod QR Pelawat</h5>
+                  
+                  <!-- QR Canvas Container -->
+                  <div class="qr-container-box my-4 p-4 border rounded-4 bg-white d-inline-block position-relative shadow-sm mx-auto">
+                    <div id="qr-loading-overlay" class="position-absolute top-0 start-0 w-100 h-100 bg-white bg-opacity-75 d-none align-items-center justify-content-center">
+                      <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                      </div>
+                    </div>
+                    <canvas id="qr-preview-canvas" class="mx-auto d-block"></canvas>
+                  </div>
+
+                  <!-- Metadata Pas -->
+                  <div class="qr-meta text-start p-3 bg-body-tertiary rounded-4 mb-4">
+                    <div class="d-flex justify-content-between mb-2 pb-2 border-bottom border-secondary border-opacity-10">
+                      <span class="text-muted small">No. Pas Pelawat</span>
+                      <span class="fw-bold text-primary small" id="preview-pass-id">WB-TEMP-0000</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2 pb-2 border-bottom border-secondary border-opacity-10">
+                      <span class="text-muted small">Nama Pelawat</span>
+                      <span class="fw-semibold text-dark-emphasis small text-truncate text-end" style="max-width: 180px;" id="preview-visitor-name">-</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2 pb-2 border-bottom border-secondary border-opacity-10">
+                      <span class="text-muted small">Kategori / Cabang</span>
+                      <span class="fw-semibold text-dark-emphasis small" id="preview-category">-</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                      <span class="text-muted small">Tarikh Masuk</span>
+                      <span class="fw-semibold text-dark-emphasis small" id="preview-visit-date">-</span>
+                    </div>
+                  </div>
+
+                  <!-- Action Buttons -->
+                  <div class="d-grid gap-2">
+                    <button class="btn btn-success d-flex align-items-center justify-content-center gap-2 py-2 rounded-3 disabled" id="print-pass-btn">
+                      <i class="fa-solid fa-print"></i> Cetak Pas Pelawat
+                    </button>
+                    <button class="btn btn-outline-primary d-flex align-items-center justify-content-center gap-2 py-2 rounded-3 disabled" id="download-qr-btn">
+                      <i class="fa-solid fa-download"></i> Muat Tunun Kod QR
+                    </button>
+                  </div>
+                  
+                  <div class="alert alert-info border-0 mt-3 rounded-3 text-start small mb-0 d-flex gap-2">
+                    <i class="fa-solid fa-circle-info text-info fs-5 mt-1"></i>
+                    <span>Pas Kod QR dijana secara automatik berdasarkan data borang. Sila cetak atau hantar QR kepada pelawat.</span>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== TAB 3: VISITOR RECORDS ==================== -->
+        <section class="tab-pane d-none" id="visitor-records-tab">
+          <div class="mb-4">
+            <h2 class="h3 font-weight-bold text-dark-emphasis mb-1">Rekod Pengurusan Pelawat</h2>
+            <p class="text-muted">Senarai penuh pendaftaran pelawat di Wisma Bintara ATM dengan kawalan eksport dan penapisan data.</p>
+          </div>
+
+          <!-- Filters Card -->
+          <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-body p-4">
+              <div class="row g-3 align-items-end">
+                <!-- Search -->
+                <div class="col-12 col-md-4">
+                  <label for="search-input" class="form-label fw-semibold text-dark-emphasis">Cari Pelawat</label>
+                  <div class="position-relative">
+                    <i class="fa-solid fa-magnifying-glass search-icon text-muted" style="left: 12px; top: 12px; position: absolute;"></i>
+                    <input type="text" class="form-control ps-5" id="search-input" placeholder="Nama, No Tentera, No IC, Plat...">
+                  </div>
+                </div>
+
+                <!-- Filter Kategori -->
+                <div class="col-12 col-md-3">
+                  <label for="filter-category" class="form-label fw-semibold text-dark-emphasis">Kategori Pelawat</label>
+                  <select class="form-select" id="filter-category">
+                    <option value="all">Semua Kategori</option>
+                    <option value="military-Army">Anggota Tentera - Darat</option>
+                    <option value="military-Navy">Anggota Tentera - Laut</option>
+                    <option value="military-Air Force">Anggota Tentera - Udara</option>
+                    <option value="public">Orang Awam / Kontraktor</option>
+                    <option value="veteran">Veteran Tentera</option>
+                  </select>
+                </div>
+
+                <!-- Filter Status -->
+                <div class="col-12 col-md-2">
+                  <label for="filter-status" class="form-label fw-semibold text-dark-emphasis">Status</label>
+                  <select class="form-select" id="filter-status">
+                    <option value="all">Semua Status</option>
+                    <option value="checked-in">Checked-In</option>
+                    <option value="checked-out">Checked-Out</option>
+                  </select>
+                </div>
+
+                <!-- Reset Button -->
+                <div class="col-12 col-md-3">
+                  <button class="btn btn-outline-secondary w-100 py-2 rounded-3" id="reset-filters-btn">
+                    <i class="fa-solid fa-filter-circle-xmark me-1"></i> Padam Penapis
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Records Table Card -->
+          <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-header bg-transparent border-0 pt-4 px-4 d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3">
+              <div>
+                <h4 class="card-title fw-bold text-dark-emphasis mb-0">Senarai Pendaftaran Komprehensif</h4>
+                <span class="text-muted small">Rekod disimpan dalam PostgreSQL secara langsung (mock-simulasi).</span>
+              </div>
+              <div class="d-flex align-items-center gap-2 flex-wrap">
+                <button class="btn btn-light btn-sm rounded-3 px-3 py-2 fw-medium border text-secondary" id="btn-export-excel">
+                  <i class="fa-solid fa-file-excel text-success me-1"></i> Excel
+                </button>
+                <button class="btn btn-light btn-sm rounded-3 px-3 py-2 fw-medium border text-secondary" id="btn-export-pdf">
+                  <i class="fa-solid fa-file-pdf text-danger me-1"></i> PDF
+                </button>
+                <button class="btn btn-light btn-sm rounded-3 px-3 py-2 fw-medium border text-secondary" id="btn-print-all">
+                  <i class="fa-solid fa-print me-1"></i> Cetak
+                </button>
+              </div>
+            </div>
+            
+            <div class="card-body px-4 pb-4 pt-2">
+              <div class="table-responsive">
+                <table class="table table-hover align-middle custom-table mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col" class="border-0 rounded-start">ID Pelawat</th>
+                      <th scope="col" class="border-0">Nama Pelawat</th>
+                      <th scope="col" class="border-0">No Tentera/IC</th>
+                      <th scope="col" class="border-0">Kategori</th>
+                      <th scope="col" class="border-0">Kenderaan</th>
+                      <th scope="col" class="border-0">Masa Masuk</th>
+                      <th scope="col" class="border-0">Status</th>
+                      <th scope="col" class="border-0 rounded-end text-center">Tindakan</th>
+                    </tr>
+                  </thead>
+                  <tbody id="visitor-records-table-body">
+                    <!-- Dynamic rendering in JS -->
+                  </tbody>
+                </table>
+              </div>
+              
+              <!-- Pagination -->
+              <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-3 mt-4 pt-3 border-top">
+                <span class="text-muted small" id="table-info-text">Menunjukkan 1 hingga 5 daripada 5 baris</span>
+                <nav aria-label="Page navigation">
+                  <ul class="pagination pagination-sm mb-0 rounded-pill" id="table-pagination">
+                    <li class="page-item disabled">
+                      <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Sebelumnya</a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">Seterusnya</a></li>
+                  </ul>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== TAB 4: QR SCANNER ==================== -->
+        <section class="tab-pane d-none" id="qr-scanner-tab">
+          <div class="mb-4">
+            <h2 class="h3 font-weight-bold text-dark-emphasis mb-1">Simulasi Imbasan Kod QR Pas Pelawat</h2>
+            <p class="text-muted">Gunakan modul pengimbas ini untuk menyemak maklumat pelawat dan mencatat masa keluar (check-out) atau status kemasukan.</p>
+          </div>
+
+          <div class="row g-4">
+            <!-- Camera Viewfinder (Left) -->
+            <div class="col-12 col-md-7 col-xl-8">
+              <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
+                <div class="card-body p-4 text-center d-flex flex-column align-items-center justify-content-center" style="min-height: 400px;">
+                  <h5 class="card-title fw-bold text-dark-emphasis text-start w-100 mb-3">Kamera Pengimbas Kaunter Pos Pengawal</h5>
+                  
+                  <!-- Camera Viewfinder Box -->
+                  <div class="scanner-viewfinder position-relative rounded-4 my-4 overflow-hidden shadow">
+                    <!-- Scanning Overlay Animations -->
+                    <div class="scanner-laser-line"></div>
+                    <div class="scanner-target-corners">
+                      <div class="corner corner-tl"></div>
+                      <div class="corner corner-tr"></div>
+                      <div class="corner corner-bl"></div>
+                      <div class="corner corner-br"></div>
+                    </div>
+                    
+                    <!-- Simulated camera feed content -->
+                    <div class="scanner-mock-feed d-flex flex-column align-items-center justify-content-center text-white p-4">
+                      <i class="fa-solid fa-camera fs-1 mb-3 text-white-50 animate-pulse"></i>
+                      <p class="mb-1 fw-medium">Sedia Untuk Imbas</p>
+                      <span class="small text-white-50">Sila acukan Kod QR pas pelawat ke kawasan kamera</span>
+                    </div>
+                  </div>
+
+                  <div class="d-flex gap-3 justify-content-center mt-2 w-100">
+                    <button class="btn btn-primary px-4 py-2 rounded-pill d-flex align-items-center gap-2" id="start-mock-scan-btn">
+                      <i class="fa-solid fa-play"></i> Simulasikan Imbasan QR
+                    </button>
+                    <button class="btn btn-outline-secondary px-4 py-2 rounded-pill d-flex align-items-center gap-2" id="stop-mock-scan-btn" disabled>
+                      <i class="fa-solid fa-stop"></i> Matikan Kamera
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Scanner Controls and Interactive Panel (Right) -->
+            <div class="col-12 col-md-5 col-xl-4">
+              <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-4">
+                  <h5 class="card-title fw-bold text-dark-emphasis mb-3">Panel Ujian Pengimbas</h5>
+                  <p class="text-muted small">Untuk tujuan demo kepada pihak atasan, pilih pelawat di bawah untuk mensimulasikan imbasan kod QR pas mereka.</p>
+                  
+                  <div class="mb-3">
+                    <label for="mock-visitor-select" class="form-label fw-semibold text-dark-emphasis">Pilih Pelawat Untuk Diimbas</label>
+                    <select class="form-select" id="mock-visitor-select">
+                      <option value="" disabled selected>-- Pilih Pelawat --</option>
+                      <!-- Loaded dynamically via JS -->
+                    </select>
+                  </div>
+
+                  <div class="p-3 border rounded-4 bg-body-tertiary mb-4">
+                    <h6 class="fw-semibold text-dark-emphasis mb-2 small">Skenario Ujian Demo:</h6>
+                    <ul class="small text-muted ps-3 mb-0">
+                      <li class="mb-1"><strong>Check-In Status</strong>: Apabila diimbas, data pelawat akan divalidasi dan maklumat terpapar di skrin pengawal keselamatan secara automatik.</li>
+                      <li><strong>Check-Out Pantas</strong>: Jika pelawat berstatus <em>Checked-In</em>, imbasan seterusnya akan menawarkan butang untuk mencatat masa keluar dengan sekali klik.</li>
+                    </ul>
+                  </div>
+
+                  <div class="qr-scan-result-card p-3 border border-success border-opacity-25 rounded-4 bg-success-subtle bg-opacity-10 d-none" id="scan-result-box">
+                    <div class="d-flex align-items-center gap-2 mb-2 text-success">
+                      <i class="fa-solid fa-circle-check fs-5"></i>
+                      <h6 class="mb-0 fw-bold">Imbasan Berjaya</h6>
+                    </div>
+                    <div class="small">
+                      <p class="mb-1"><strong>Pelawat:</strong> <span id="scan-res-name">Kapten Ali</span></p>
+                      <p class="mb-1"><strong>ID Pas:</strong> <span id="scan-res-id">WB-2026-0001</span></p>
+                      <p class="mb-1"><strong>Kategori:</strong> <span id="scan-res-cat">Tentera (Darat)</span></p>
+                      <p class="mb-3"><strong>Status Semasa:</strong> <span class="badge bg-success" id="scan-res-status">Checked-In</span></p>
+                      <div class="d-grid">
+                        <button class="btn btn-danger btn-sm rounded-3 py-2 fw-medium" id="scan-checkout-btn">
+                          <i class="fa-solid fa-right-from-bracket me-1"></i> Daftar Keluar (Check-Out) Pelawat
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== TAB 5: SETTINGS ==================== -->
+        <section class="tab-pane d-none" id="settings-tab">
+          <div class="mb-4">
+            <h2 class="h3 font-weight-bold text-dark-emphasis mb-1">Tetapan Sistem W-BINTARA</h2>
+            <p class="text-muted">Konfigurasi tetapan portal pentadbiran, pangkalan data, dan reka bentuk.</p>
+          </div>
+
+          <div class="row g-4">
+            <div class="col-12 col-lg-8">
+              <!-- General Settings -->
+              <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-body p-4">
+                  <h5 class="card-title fw-bold text-dark-emphasis mb-4">Konfigurasi Pengurusan Pos Pengawal</h5>
+                  
+                  <div class="mb-4">
+                    <div class="form-check form-switch form-switch-custom d-flex justify-content-between align-items-center ps-0">
+                      <div>
+                        <label class="form-check-label fw-semibold text-dark-emphasis mb-0" style="cursor: pointer;" for="set-require-qr">Wajibkan Kod QR Semasa Daftar Masuk</label>
+                        <span class="d-block text-muted small mt-1">Menghendaki pengawal mengimbas kod QR untuk setiap pengunjung yang keluar/masuk.</span>
+                      </div>
+                      <input class="form-check-input ms-2 me-0" type="checkbox" id="set-require-qr" checked>
+                    </div>
+                  </div>
+
+                  <hr class="my-4">
+
+                  <div class="mb-4">
+                    <div class="form-check form-switch form-switch-custom d-flex justify-content-between align-items-center ps-0">
+                      <div>
+                        <label class="form-check-label fw-semibold text-dark-emphasis mb-0" style="cursor: pointer;" for="set-auto-checkout">Daftar Keluar Automatik (Auto Check-Out)</label>
+                        <span class="d-block text-muted small mt-1">Mendaftar keluar pelawat secara automatik selepas 12 jam tanpa daftar keluar manual.</span>
+                      </div>
+                      <input class="form-check-input ms-2 me-0" type="checkbox" id="set-auto-checkout">
+                    </div>
+                  </div>
+
+                  <hr class="my-4">
+
+                  <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                      <label for="set-pass-expiry" class="form-label fw-semibold text-dark-emphasis">Tempoh Sah Pas Pelawat (Jam)</label>
+                      <input type="number" class="form-control" id="set-pass-expiry" value="24">
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label for="set-printer-type" class="form-label fw-semibold text-dark-emphasis">Pencetak Laluan Pas (Thermal Printer)</label>
+                      <select class="form-select" id="set-printer-type">
+                        <option value="direct">Direct Thermal (80mm)</option>
+                        <option value="inkjet">A4 Inkjet/Laser Printer</option>
+                        <option value="none">Tiada Pencetak / Simpan Digital Sahaja</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="mt-4 d-flex justify-content-end">
+                    <button class="btn btn-primary px-4 py-2 rounded-3" id="save-settings-btn">
+                      <i class="fa-solid fa-floppy-disk me-1"></i> Simpan Tetapan
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Database & Backups -->
+              <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+                  <h5 class="card-title fw-bold text-dark-emphasis mb-3">Integrasi Pangkalan Data PostgreSQL</h5>
+                  <p class="text-muted small">Pangkalan data disambung secara selamat ke pelayan JSP backend. Anda boleh membuat sandaran data atau menetapkan semula data simulasi tempatan di bawah.</p>
+                  
+                  <div class="d-flex gap-3 flex-wrap mt-3">
+                    <button class="btn btn-outline-primary rounded-3 d-flex align-items-center gap-2" id="backup-db-btn">
+                      <i class="fa-solid fa-download"></i> Buat Sandaran Data (Backup SQL)
+                    </button>
+                    <button class="btn btn-outline-danger rounded-3 d-flex align-items-center gap-2" id="reset-mock-db-btn">
+                      <i class="fa-solid fa-trash-can"></i> Set Semula Data Simulasi Portal
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Profile Info (Right) -->
+            <div class="col-12 col-lg-4">
+              <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4 text-center">
+                  <h5 class="card-title fw-bold text-dark-emphasis text-start mb-3">Profil Pentadbir</h5>
+                  
+                  <div class="user-avatar bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold mx-auto my-4" style="width: 90px; height: 90px; font-size: 32px;">
+                    SA
+                  </div>
+
+                  <h5 class="fw-bold text-dark-emphasis mb-1">Super Administrator</h5>
+                  <span class="badge bg-secondary-subtle text-secondary-emphasis mb-3 px-3 py-1.5 rounded-pill">W-BINTARA 2025/2026 Admin</span>
+                  
+                  <div class="text-start border-top pt-3 mt-3">
+                    <p class="mb-2 text-muted small"><i class="fa-regular fa-envelope me-2 text-primary"></i> adm.bintara@mil.my</p>
+                    <p class="mb-2 text-muted small"><i class="fa-solid fa-phone me-2 text-success"></i> +603-2692 1111 (Ext. 403)</p>
+                    <p class="mb-0 text-muted small"><i class="fa-solid fa-building-shield me-2 text-warning"></i> Wisma Bintara ATM, Kuala Lumpur</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- Footer -->
+      <footer class="app-footer text-center py-3 bg-card border-top border-secondary border-opacity-10 text-muted small">
+        <div class="container-fluid">
+          <p class="mb-0">&copy; 2026 Wisma Bintara ATM. Reka Bentuk UI Sistem W-BINTARA Moden Terpelihara.</p>
+        </div>
+      </footer>
+
+    </div>
+
+  </div>
+
+  <!-- Bootstrap 5.3 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- QRious JS (for QR Generation) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  
+  <!-- Application JS -->
+  <script src="app.js?v=2"></script>
+</body>
+</html>
