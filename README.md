@@ -35,6 +35,7 @@ Berikut adalah rakaman video demo interaktif yang menunjukkan navigasi papan pem
 
 [![Tonton Video Demo](demo.png)](https://raw.githubusercontent.com/maui2023/demo-modern-ui/refs/heads/main/demo.mp4)
 
+Demo Web: https://maui2023.github.io/demo-modern-ui
 ---
 ## 🛠️ Arkitektur & Teknologi Cadangan
 
