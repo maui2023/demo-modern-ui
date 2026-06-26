@@ -48,7 +48,7 @@
             <span class="brand-subtitle">Wisma Bintara ATM</span>
           </div>
         </div>
-        <button class="btn btn-close-sidebar d-lg-none" id="close-sidebar-btn" aria-label="Tutup Sidebar">
+        <button class="btn btn-close-sidebar d-xl-none" id="close-sidebar-btn" aria-label="Tutup Sidebar">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
@@ -75,7 +75,7 @@
           <li class="nav-item">
             <a href="#" class="nav-link active" data-tab="dashboard">
               <i class="fa-solid fa-chart-line nav-icon"></i>
-              <span>Papan Pemuka</span>
+              <span>Dashboard</span>
             </a>
           </li>
           <li class="nav-item">
@@ -120,10 +120,10 @@
       <!-- Topbar Header -->
       <header class="topbar-header bg-card d-flex align-items-center justify-content-between px-4 py-3 shadow-sm">
         <div class="d-flex align-items-center gap-3">
-          <button class="btn btn-toggle-sidebar d-lg-none" id="toggle-sidebar-btn" aria-label="Buka Sidebar">
+          <button class="btn btn-toggle-sidebar d-xl-none" id="toggle-sidebar-btn" aria-label="Buka Sidebar">
             <i class="fa-solid fa-bars"></i>
           </button>
-          <button class="btn btn-toggle-sidebar-collapsed d-none d-lg-flex" id="toggle-sidebar-collapsed-btn" aria-label="Toggle Sidebar">
+          <button class="btn btn-toggle-sidebar-collapsed d-none d-xl-flex" id="toggle-sidebar-collapsed-btn" aria-label="Toggle Sidebar">
             <i class="fa-solid fa-bars-staggered"></i>
           </button>
           <div class="search-bar d-none d-md-flex align-items-center position-relative">
@@ -405,11 +405,11 @@
                 <table class="table table-hover align-middle custom-table mb-0">
                   <thead class="table-light">
                     <tr>
-                      <th scope="col" class="border-0 rounded-start">ID Pelawat</th>
+                      <th scope="col" class="border-0 rounded-start d-none d-sm-table-cell">ID Pelawat</th>
                       <th scope="col" class="border-0">Nama Pelawat</th>
-                      <th scope="col" class="border-0">Kategori</th>
-                      <th scope="col" class="border-0">No. Kenderaan</th>
-                      <th scope="col" class="border-0">Masa Masuk</th>
+                      <th scope="col" class="border-0 d-none d-md-table-cell">Kategori</th>
+                      <th scope="col" class="border-0 d-none d-sm-table-cell">No. Kenderaan</th>
+                      <th scope="col" class="border-0 d-none d-lg-table-cell">Masa Masuk</th>
                       <th scope="col" class="border-0">Status</th>
                       <th scope="col" class="border-0 rounded-end text-end">Tindakan</th>
                     </tr>
@@ -773,12 +773,12 @@
                 <table class="table table-hover align-middle custom-table mb-0">
                   <thead class="table-light">
                     <tr>
-                      <th scope="col" class="border-0 rounded-start">ID Pelawat</th>
+                      <th scope="col" class="border-0 rounded-start d-none d-sm-table-cell">ID Pelawat</th>
                       <th scope="col" class="border-0">Nama Pelawat</th>
-                      <th scope="col" class="border-0">No Tentera/IC</th>
-                      <th scope="col" class="border-0">Kategori</th>
-                      <th scope="col" class="border-0">Kenderaan</th>
-                      <th scope="col" class="border-0">Masa Masuk</th>
+                      <th scope="col" class="border-0 d-none d-md-table-cell">No Tentera/IC</th>
+                      <th scope="col" class="border-0 d-none d-md-table-cell">Kategori</th>
+                      <th scope="col" class="border-0 d-none d-sm-table-cell">Kenderaan</th>
+                      <th scope="col" class="border-0 d-none d-lg-table-cell">Masa Masuk</th>
                       <th scope="col" class="border-0">Status</th>
                       <th scope="col" class="border-0 rounded-end text-center">Tindakan</th>
                     </tr>
@@ -1027,6 +1027,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
   
   <!-- Application JS -->
-  <script src="app.js?v=2"></script>
+  <script src="app.js?v=3"></script>
 </body>
 </html>

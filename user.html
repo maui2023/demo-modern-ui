@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ms" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal Pelawat W-BINTARA Mobile</title>
+  
+  <!-- Manifest meta (PWA style support) -->
+  <meta name="theme-color" content="#2563eb">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  
+  <!-- Inline script to prevent theme flash (FOUC) -->
+  <script>
+    {
+      const colorScheme = localStorage.getItem("color-scheme") || "light";
+      document.documentElement.setAttribute("data-bs-theme", colorScheme);
+    }
+  </script>
+
+  <!-- Google Fonts (Outfit) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Bootstrap 5.3 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Custom User Stylesheet -->
+  <link rel="stylesheet" href="user.css">
+</head>
+<body>
+
+  <!-- SIMULATOR CONTAINER -->
+  <div class="mobile-app-wrapper">
+
+    <!-- ==================== LOGIN SCREEN ==================== -->
+    <div id="login-screen" class="login-screen">
+      <div class="text-center mb-4 login-card">
+        <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 70px; height: 70px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);">
+          <i class="fa-solid fa-hotel fs-3"></i>
+        </div>
+        <h2 class="fw-bold mb-1">W-BINTARA Mobile</h2>
+        <p class="text-muted small">Sistem Kemasukan Pelawat Wisma Bintara ATM</p>
+      </div>
+
+      <div class="card glass-card p-4 w-100 login-card">
+        <h5 class="fw-bold mb-3 text-center">Log Masuk Pelawat</h5>
+        
+        <form id="login-form">
+          <div class="mb-3">
+            <label for="login-username" class="form-label fw-semibold">No. IC / No. Tentera</label>
+            <input type="text" class="form-control" id="login-username" placeholder="Masukkan ID anda" required>
+          </div>
+          <div class="mb-4">
+            <label for="login-password" class="form-label fw-semibold">Kata Laluan</label>
+            <input type="password" class="form-control" id="login-password" placeholder="••••••••" required>
+          </div>
+          <button type="submit" class="btn btn-primary w-100 py-2.5 rounded-3 fw-bold btn-primary-mobile">Log Masuk</button>
+        </form>
+
+        <div class="text-center mt-3">
+          <span class="text-muted small">Atau guna log masuk demo pantas:</span>
+          <div class="d-flex gap-2 justify-content-center mt-2">
+            <button class="btn btn-sm btn-outline-primary" id="demo-mil-btn">Tentera (Ali)</button>
+            <button class="btn btn-sm btn-outline-secondary" id="demo-civ-btn">Awam (John)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== MAIN APPLICATION APP SHELL ==================== -->
+    <div id="app-shell" class="d-none">
+      
+      <!-- Top Sticky Header -->
+      <header class="mobile-header p-3 sticky-top">
+        <div class="d-flex align-items-center justify-content-between">
+          <div class="d-flex align-items-center gap-2">
+            <div class="bg-primary text-white rounded-3 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+              <i class="fa-solid fa-hotel fs-6"></i>
+            </div>
+            <div>
+              <span class="fw-bold text-primary small d-block" style="letter-spacing: 0.5px; line-height: 1;">W-BINTARA</span>
+              <span class="text-muted" style="font-size: 0.65rem; font-weight: 500;">PORTAL PELAWAT</span>
+            </div>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <button class="btn-icon" id="theme-toggle-btn" title="Tukar Tema">
+              <i class="fa-solid fa-moon text-muted" id="theme-icon"></i>
+            </button>
+            <button class="btn-icon text-danger" id="logout-quick-btn" title="Log Keluar">
+              <i class="fa-solid fa-right-from-bracket"></i>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Dynamic Tab Contents -->
+      <main class="container-fluid p-3">
+        
+        <!-- Tab 1: Dashboard (Home) -->
+        <section id="tab-home" class="tab-section">
+          <!-- User Profile Brief -->
+          <div class="d-flex align-items-center gap-3 mb-4 p-2">
+            <div class="user-avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" id="user-avatar-initials" style="width: 50px; height: 50px; font-size: 1.25rem;">
+              U
+            </div>
+            <div>
+              <span class="text-muted small d-block">Selamat Datang,</span>
+              <h5 class="fw-bold mb-0 text-dark-emphasis" id="user-display-name">Nama Pengguna</h5>
+            </div>
+          </div>
+
+          <!-- Active Pass Status Card -->
+          <div class="card glass-card p-4 mb-4">
+            <h6 class="fw-bold mb-3 d-flex align-items-center gap-2">
+              <i class="fa-solid fa-id-card text-primary"></i> Status Pas Masuk Aktif
+            </h6>
+            
+            <div id="no-pass-card" class="text-center py-3">
+              <i class="fa-solid fa-circle-info text-muted fs-2 mb-2"></i>
+              <p class="mb-3 text-muted small">Anda tiada permohonan pas masuk yang didaftarkan atau aktif hari ini.</p>
+              <button class="btn btn-primary btn-primary-mobile py-2" data-tab-link="tab-apply">
+                <i class="fa-solid fa-plus me-1"></i> Mohon Pas Sekarang
+              </button>
+            </div>
+
+            <div id="active-pass-brief" class="d-none">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="badge-mobile-status checked-in" id="active-pass-status-badge">Sedia Diimbas</span>
+                <span class="text-muted small fw-semibold" id="active-pass-id-text">No Pas</span>
+              </div>
+              <div class="bg-light p-3 rounded-3 mb-3 text-center">
+                <div class="small text-muted mb-1">Tujuan Destinasi</div>
+                <div class="fw-bold" id="active-pass-purpose-text">Tujuan Lawatan</div>
+              </div>
+              <button class="btn btn-outline-primary btn-outline-mobile w-100 py-2" data-tab-link="tab-qr">
+                <i class="fa-solid fa-qrcode me-1"></i> Tunjukkan Kod QR Pas
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Actions Grid -->
+          <h6 class="fw-bold mb-3">Pintasan Pantas</h6>
+          <div class="row g-3 mb-4">
+            <div class="col-6">
+              <div class="card glass-card p-3 h-100 text-center cursor-pointer" data-tab-link="tab-apply">
+                <div class="text-primary mb-2 fs-3"><i class="fa-solid fa-file-pen"></i></div>
+                <div class="fw-semibold small">Mohon Pas</div>
+                <span class="text-muted" style="font-size: 0.65rem;">Mohon kemasukan baharu</span>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="card glass-card p-3 h-100 text-center cursor-pointer" data-tab-link="tab-qr" id="quick-qr-btn">
+                <div class="text-success mb-2 fs-3"><i class="fa-solid fa-qrcode"></i></div>
+                <div class="fw-semibold small">Paparan QR</div>
+                <span class="text-muted" style="font-size: 0.65rem;">Tunjuk pas digital</span>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="card glass-card p-3 h-100 text-center cursor-pointer" data-tab-link="tab-history">
+                <div class="text-info mb-2 fs-3"><i class="fa-solid fa-history"></i></div>
+                <div class="fw-semibold small">Sejarah Lawatan</div>
+                <span class="text-muted" style="font-size: 0.65rem;">Rekod lawatan lampau</span>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="card glass-card p-3 h-100 text-center cursor-pointer" id="quick-contact-btn">
+                <div class="text-warning mb-2 fs-3"><i class="fa-solid fa-phone"></i></div>
+                <div class="fw-semibold small">Hubungi Wisma</div>
+                <span class="text-muted" style="font-size: 0.65rem;">Hubungi pos kawalan</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tab 2: Apply for Pass (Borang Permohonan) -->
+        <section id="tab-apply" class="tab-section d-none">
+          <div class="mb-3">
+            <h5 class="fw-bold mb-1">Permohonan Pas Masuk</h5>
+            <p class="text-muted small">Sila isi butiran lawatan untuk mendaftarkan kemasukan.</p>
+          </div>
+
+          <form id="apply-pass-form" class="card glass-card p-4 mb-4">
+            <!-- Prefilled Profile Section -->
+            <div class="bg-light p-3 rounded-3 mb-4">
+              <div class="d-flex justify-content-between mb-1">
+                <span class="text-muted small">Nama Pemohon:</span>
+                <span class="fw-semibold small" id="apply-name">Sila log masuk</span>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span class="text-muted small">ID / No. Tentera:</span>
+                <span class="fw-semibold small" id="apply-id-no">-</span>
+              </div>
+            </div>
+
+            <!-- Visit Details Form -->
+            <div class="mb-3">
+              <label for="apply-vehicle" class="form-label fw-semibold">No. Pendaftaran Kenderaan <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="apply-vehicle" placeholder="Contoh: WQA 4321 (Atau 'Tiada')" required>
+            </div>
+            
+            <div class="mb-3">
+              <label for="apply-purpose" class="form-label fw-semibold">Tujuan / Destinasi Lawatan <span class="text-danger">*</span></label>
+              <select class="form-select" id="apply-purpose" required>
+                <option value="" disabled selected>-- Pilih Tujuan --</option>
+                <option value="Pejabat Pentadbiran Wisma">Pejabat Pentadbiran Wisma</option>
+                <option value="Dewan Sajian / Mess Pegawai">Dewan Sajian / Mess Pegawai</option>
+                <option value="Kemudahan Sukan / Kolam Renang">Kemudahan Sukan / Kolam Renang</option>
+                <option value="Penyelenggaraan Kemudahan">Penyelenggaraan Kemudahan</option>
+                <option value="Mesyuarat / Perbincangan Rasmi">Mesyuarat / Perbincangan Rasmi</option>
+                <option value="Lawatan Peribadi / Sosial">Lawatan Peribadi / Sosial</option>
+              </select>
+            </div>
+
+            <div class="mb-4">
+              <label for="apply-datetime" class="form-label fw-semibold">Tarikh & Masa Masuk <span class="text-danger">*</span></label>
+              <input type="datetime-local" class="form-control" id="apply-datetime" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-2.5 btn-primary-mobile">Hantar Permohonan Pas</button>
+          </form>
+        </section>
+
+        <!-- Tab 3: Display QR Pass (Pas QR) -->
+        <section id="tab-qr" class="tab-section d-none">
+          <div class="text-center mb-3">
+            <h5 class="fw-bold mb-1">Pas Masuk Digital</h5>
+            <p class="text-muted small">Tunjukkan kod QR ini kepada pengawal semasa masuk atau keluar.</p>
+          </div>
+
+          <div id="no-qr-pass-available" class="card glass-card p-4 text-center py-5">
+            <i class="fa-solid fa-qrcode text-muted fs-1 mb-3"></i>
+            <h6 class="fw-bold text-muted mb-2">Tiada Pas Aktif</h6>
+            <p class="text-muted small mb-4">Anda belum memohon sebarang pas digital yang aktif untuk hari ini.</p>
+            <button class="btn btn-primary btn-primary-mobile py-2 px-4" data-tab-link="tab-apply">
+              <i class="fa-solid fa-plus me-1"></i> Mohon Pas Sekarang
+            </button>
+          </div>
+
+          <div id="qr-pass-display-container" class="d-none">
+            <div class="pass-digital-card mb-4 text-center">
+              <h5 class="fw-bold mb-1 tracking-wide">PAS MASUK W-BINTARA</h5>
+              <span class="text-white-50 d-block" style="font-size: 0.65rem;">Wisma Bintara ATM Mobile Pass</span>
+              
+              <!-- QR Canvas Holder -->
+              <div class="bg-white p-3 rounded-4 d-inline-block my-4 shadow-inner">
+                <canvas id="user-qr-canvas" class="mx-auto d-block"></canvas>
+              </div>
+
+              <!-- Pass ID -->
+              <h4 class="fw-bold text-warning mb-3" id="user-pass-id-display">WB-2026-XXXX</h4>
+              
+              <!-- User metadata in pass -->
+              <div class="text-start border-top border-secondary border-opacity-30 pt-3" style="font-size: 0.85rem;">
+                <div class="row mb-2">
+                  <div class="col-4 text-white-50">Nama:</div>
+                  <div class="col-8 fw-semibold text-truncate" id="user-pass-name-display">-</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-4 text-white-50">Identiti:</div>
+                  <div class="col-8 fw-semibold" id="user-pass-identity-display">-</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-4 text-white-50">Kenderaan:</div>
+                  <div class="col-8 fw-semibold" id="user-pass-vehicle-display">-</div>
+                </div>
+                <div class="row">
+                  <div class="col-4 text-white-50">Masa:</div>
+                  <div class="col-8 fw-semibold" id="user-pass-time-display">-</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="d-flex gap-3 mb-4">
+              <button class="btn btn-outline-secondary w-50 py-2.5 btn-outline-mobile" id="download-user-qr-btn">
+                <i class="fa-solid fa-download me-1"></i> Muat Turun
+              </button>
+              <button class="btn btn-primary w-50 py-2.5 btn-primary-mobile" id="simulate-guard-scan-btn">
+                <i class="fa-solid fa-qrcode me-1"></i> Imbas Demo
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tab 4: Sejarah (Sejarah Lawatan) -->
+        <section id="tab-history" class="tab-section d-none">
+          <!-- History Table Card -->
+          <div class="card glass-card p-3">
+            <h6 class="fw-bold mb-3 text-dark-emphasis border-bottom pb-2">Sejarah Lawatan & Pas</h6>
+            <div id="history-items-container">
+              <!-- Rendered dynamically -->
+              <p class="text-muted text-center py-3 small">Tiada rekod sejarah lawatan ditemui.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tab 5: Profile (Profil Pelawat) -->
+        <section id="tab-profile" class="tab-section d-none">
+          <!-- Profile Card -->
+          <div class="card glass-card p-3 mb-4">
+            <h6 class="fw-bold mb-3 text-dark-emphasis border-bottom pb-2">Profil Pelawat</h6>
+            <div class="d-flex align-items-center gap-3">
+              <div class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold" id="profile-avatar-initials" style="width: 45px; height: 45px;">
+                SA
+              </div>
+              <div>
+                <h6 class="fw-bold mb-0 text-dark-emphasis" id="profile-name-text">Nama Penuh</h6>
+                <span class="text-muted small" id="profile-id-text">ID: -</span>
+              </div>
+            </div>
+            
+            <div class="mt-3 pt-3 border-top small" style="font-size: 0.8rem;">
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Kategori:</span>
+                <span class="fw-semibold" id="profile-category-text">Tentera</span>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">No Telefon:</span>
+                <span class="fw-semibold" id="profile-phone-text">012-3456789</span>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span class="text-muted">E-mel:</span>
+                <span class="fw-semibold text-truncate" id="profile-email-text">user@email.com</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tukar Kata Laluan Card -->
+          <div class="card glass-card p-3 mb-4">
+            <h6 class="fw-bold mb-3 text-dark-emphasis border-bottom pb-2">Tukar Kata Laluan</h6>
+            <form id="change-password-form">
+              <div class="mb-2">
+                <label for="change-pwd-current" class="form-label fw-semibold small mb-1" style="font-size: 0.75rem;">Kata Laluan Semasa</label>
+                <input type="password" class="form-control form-control-sm" id="change-pwd-current" placeholder="••••••••" required>
+              </div>
+              <div class="mb-2">
+                <label for="change-pwd-new" class="form-label fw-semibold small mb-1" style="font-size: 0.75rem;">Kata Laluan Baharu</label>
+                <input type="password" class="form-control form-control-sm" id="change-pwd-new" placeholder="••••••••" required>
+              </div>
+              <div class="mb-3">
+                <label for="change-pwd-confirm" class="form-label fw-semibold small mb-1" style="font-size: 0.75rem;">Sahkan Kata Laluan Baharu</label>
+                <input type="password" class="form-control form-control-sm" id="change-pwd-confirm" placeholder="••••••••" required>
+              </div>
+              <button type="submit" class="btn btn-primary btn-primary-mobile w-100 py-2" style="font-size: 0.8rem;">Kemas Kini Kata Laluan</button>
+            </form>
+          </div>
+
+          <!-- Logout Button -->
+          <button class="btn btn-outline-danger w-100 py-2.5 rounded-3 mt-2" id="logout-btn">
+            <i class="fa-solid fa-right-from-bracket me-1"></i> Log Keluar
+          </button>
+        </section>
+
+      </main>
+
+      <!-- Bottom Sticky Navigation Bar -->
+      <nav class="bottom-navbar">
+        <button class="nav-item-btn active" data-tab-btn="tab-home">
+          <i class="fa-solid fa-house"></i>
+          <span>Home</span>
+        </button>
+        <button class="nav-item-btn" data-tab-btn="tab-apply">
+          <i class="fa-solid fa-file-pen"></i>
+          <span>Mohon</span>
+        </button>
+        <button class="nav-item-btn nav-item-center" data-tab-btn="tab-qr" id="nav-qr-btn">
+          <i class="fa-solid fa-qrcode"></i>
+        </button>
+        <button class="nav-item-btn" data-tab-btn="tab-history">
+          <i class="fa-solid fa-history"></i>
+          <span>Sejarah</span>
+        </button>
+        <button class="nav-item-btn" data-tab-btn="tab-profile">
+          <i class="fa-solid fa-user"></i>
+          <span>Profil</span>
+        </button>
+      </nav>
+
+    </div>
+
+  </div>
+
+  <!-- BootStrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <!-- QRious JS (for QR Generation) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  
+  <!-- App JS -->
+  <script src="user.js"></script>
+</body>
+</html>

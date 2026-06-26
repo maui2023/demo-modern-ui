@@ -636,14 +636,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
           const rowHtml = `
             <tr>
-              <td><span class="text-primary fw-semibold">${v.id}</span></td>
+              <td class="d-none d-sm-table-cell"><span class="text-primary fw-semibold">${v.id}</span></td>
               <td>
                 <div class="fw-semibold text-dark-emphasis">${v.name}</div>
-                <div class="text-muted small">${v.type === "military" ? v.milNo : v.icNo}</div>
+                <div class="text-muted small d-sm-none">${v.id}</div>
+                <div class="text-muted small d-md-none">${v.type === "military" ? v.milNo : v.icNo}</div>
+                <div class="text-muted small d-sm-none">${v.vehicleNo}</div>
               </td>
-              <td><span class="badge ${categoryClass} px-2.5 py-1 rounded-2 font-weight-bold small">${categoryBadge}</span></td>
-              <td><code class="text-secondary fw-semibold bg-light px-2 py-1 rounded">${v.vehicleNo}</code></td>
-              <td><span class="text-muted small">${formatDatetimeString(v.visitDatetime)}</span></td>
+              <td class="d-none d-md-table-cell"><span class="badge ${categoryClass} px-2.5 py-1 rounded-2 font-weight-bold small">${categoryBadge}</span></td>
+              <td class="d-none d-sm-table-cell"><code class="text-secondary fw-semibold bg-light px-2 py-1 rounded">${v.vehicleNo}</code></td>
+              <td class="d-none d-lg-table-cell"><span class="text-muted small">${formatDatetimeString(v.visitDatetime)}</span></td>
               <td>${statusBadge}</td>
               <td class="text-end">
                 ${v.status === "checked-in" 
@@ -844,12 +846,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const rowHtml = `
           <tr>
-            <td><span class="text-primary fw-semibold">${v.id}</span></td>
-            <td><div class="fw-semibold text-dark-emphasis">${v.name}</div></td>
-            <td><code class="text-muted">${v.type === "military" ? v.milNo : v.icNo}</code></td>
-            <td><span class="badge ${catBadgeClass} px-2.5 py-1 rounded-2 small">${categoryText}</span></td>
-            <td><code class="text-secondary fw-semibold bg-light px-2 py-1 rounded">${v.vehicleNo}</code></td>
-            <td><span class="text-muted small">${formatDatetimeString(v.visitDatetime)}</span></td>
+            <td class="d-none d-sm-table-cell"><span class="text-primary fw-semibold">${v.id}</span></td>
+            <td>
+              <div class="fw-semibold text-dark-emphasis">${v.name}</div>
+              <div class="text-muted small d-sm-none">${v.id}</div>
+              <div class="text-muted small d-md-none">${v.type === "military" ? v.milNo : v.icNo} | ${categoryText}</div>
+              <div class="text-muted small d-sm-none">${v.vehicleNo}</div>
+            </td>
+            <td class="d-none d-md-table-cell"><code class="text-muted">${v.type === "military" ? v.milNo : v.icNo}</code></td>
+            <td class="d-none d-md-table-cell"><span class="badge ${catBadgeClass} px-2.5 py-1 rounded-2 small">${categoryText}</span></td>
+            <td class="d-none d-sm-table-cell"><code class="text-secondary fw-semibold bg-light px-2 py-1 rounded">${v.vehicleNo}</code></td>
+            <td class="d-none d-lg-table-cell"><span class="text-muted small">${formatDatetimeString(v.visitDatetime)}</span></td>
             <td>${statusHtml}</td>
             <td class="text-center">
               ${v.status === "checked-in"

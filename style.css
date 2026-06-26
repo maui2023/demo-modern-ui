@@ -618,10 +618,6 @@ body {
 
 /* Responsive Breakpoints & Toggle Behaviors */
 @media (max-width: 1199.98px) {
-  /* Tablet mode: sidebar can be toggled (collapsed or full) */
-}
-
-@media (max-width: 991.98px) {
   .sidebar-wrapper {
     left: -280px;
   }
