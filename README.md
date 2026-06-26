@@ -33,7 +33,7 @@ Cadangan ini membentangkan **W-BINTARA 2.0 (Modern Admin Dashboard)** — satu t
 
 Berikut adalah rakaman video demo interaktif yang menunjukkan navigasi papan pemuka, responsif mudah alih, borang dinamik, dan simulasi pengimbasan Kod QR:
 
-[![Tonton Video Demo](old-website.png)](demo.mp4)
+[![Tonton Video Demo](demo.png)](https://raw.githubusercontent.com/maui2023/demo-modern-ui/refs/heads/main/demo.mp4)
 
 ---
 ## 🛠️ Arkitektur & Teknologi Cadangan
