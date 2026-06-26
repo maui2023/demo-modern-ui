@@ -174,7 +174,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const navLinks = document.querySelectorAll(".sidebar-nav .nav-link, [data-tab-link], [data-action-tab]");
     const sidebar = document.getElementById("sidebar");
     const toggleBtn = document.getElementById("toggle-sidebar-btn");
+    const toggleCollapsedBtn = document.getElementById("toggle-sidebar-collapsed-btn");
     const closeBtn = document.getElementById("close-sidebar-btn");
+    const mainContent = document.querySelector(".main-content");
     
     // Create Backdrop Element for Mobile Sidebar overlay
     let backdrop = document.createElement("div");
@@ -186,6 +188,14 @@ document.addEventListener("DOMContentLoaded", () => {
       toggleBtn.addEventListener("click", () => {
         sidebar.classList.add("active");
         backdrop.classList.remove("d-none");
+      });
+    }
+
+    // Sidebar toggle for desktop/tablet (collapsed)
+    if (toggleCollapsedBtn) {
+      toggleCollapsedBtn.addEventListener("click", () => {
+        sidebar.classList.toggle("collapsed");
+        mainContent.classList.toggle("sidebar-collapsed");
       });
     }
 
