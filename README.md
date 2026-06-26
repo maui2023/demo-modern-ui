@@ -33,12 +33,7 @@ Cadangan ini membentangkan **W-BINTARA 2.0 (Modern Admin Dashboard)** — satu t
 
 Berikut adalah rakaman video demo interaktif yang menunjukkan navigasi papan pemuka, responsif mudah alih, borang dinamik, dan simulasi pengimbasan Kod QR:
 
-```html
-<video width="100%" controls>
-  <source src="demo.mp4" type="video/mp4">
-  Pelayar anda tidak menyokong elemen video. Sila muat turun fail <a href="demo.mp4">demo.mp4</a> untuk menonton.
-</video>
-```
+[![Tonton Video Demo](old-website.png)](demo.mp4)
 
 ---
 ## 🛠️ Arkitektur & Teknologi Cadangan
